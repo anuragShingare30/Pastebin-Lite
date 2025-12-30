@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createPaste } from "@/app/lib/services/paste.service";
+import { getBaseUrl } from "@/app/lib/utils/url";
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,8 +37,8 @@ export async function POST(request: NextRequest) {
 
     const paste = await createPaste({ content, ttl: ttl_seconds, maxViews: max_views });
 
-    // Build the shareable URL
-    const baseUrl = request.nextUrl.origin;
+    // Build the shareable URL using deployed URL or fallback to request origin
+    const baseUrl = getBaseUrl(request.nextUrl.origin);
     const url = `${baseUrl}/p/${paste.id}`;
 
     return NextResponse.json(
